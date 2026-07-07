@@ -7,31 +7,30 @@ load_dotenv()
 #  Reverb Bot – Configuration
 # ─────────────────────────────────────────────
 
-# Bot token – set via environment variable or .env file
 BOT_TOKEN: str = os.getenv("BOT_TOKEN", "")
-
-# Command prefix
 PREFIX: str = os.getenv("PREFIX", ".")
-
-# Owner Discord user ID (int)
 OWNER_ID: int = int(os.getenv("OWNER_ID", "0"))
 
-# Embed brand colour (hex → int)
-BRAND_COLOR: int = 0x7289DA   # Discord Blurple
-SUCCESS_COLOR: int = 0x57F287  # Green
-ERROR_COLOR: int = 0xED4245    # Red
-WARNING_COLOR: int = 0xFEE75C  # Yellow
+# ── Colours ────────────────────────────────────────────────────────────────
+BRAND_COLOR:   int = 0x1DB954   # Spotify green  – primary accent
+SUCCESS_COLOR: int = 0x1DB954   # same green for queue-add / success
+ERROR_COLOR:   int = 0xED4245   # Discord red
+WARNING_COLOR: int = 0xFEE75C   # Discord yellow
+INFO_COLOR:    int = 0x5865F2   # Discord blurple
+NP_COLOR:      int = 0x1DB954   # Now-playing green
 
-# Auto-disconnect delay (seconds) after voice channel is empty
+# ── Custom server emojis ───────────────────────────────────────────────────
+EMOJI_ERROR:      str = "<:XE:1524120772396712157>"           # ❌ fail / X
+EMOJI_SUCCESS:    str = "<:THESWE:1524120674157858826>"       # ✅ enqueued / added
+EMOJI_MUSIC:      str = "<:bear_music:1524121341349990541>"   # 🐻 welcome
+EMOJI_INFO:       str = "<:info:1523416103206916297>"         # ℹ️  info
+
+# ── Behaviour ──────────────────────────────────────────────────────────────
 AUTO_DISCONNECT_DELAY: int = int(os.getenv("AUTO_DISCONNECT_DELAY", "300"))
+MAX_QUEUE_SIZE:        int = int(os.getenv("MAX_QUEUE_SIZE", "100"))
+DEFAULT_VOLUME:        int = int(os.getenv("DEFAULT_VOLUME", "50"))
 
-# Maximum queue size
-MAX_QUEUE_SIZE: int = int(os.getenv("MAX_QUEUE_SIZE", "100"))
-
-# Default volume (0–100)
-DEFAULT_VOLUME: int = int(os.getenv("DEFAULT_VOLUME", "50"))
-
-# yt-dlp options
+# ── yt-dlp ─────────────────────────────────────────────────────────────────
 YTDL_FORMAT_OPTIONS: dict = {
     "format": "bestaudio/best",
     "outtmpl": "%(extractor)s-%(id)s-%(title)s.%(ext)s",
@@ -48,10 +47,8 @@ YTDL_FORMAT_OPTIONS: dict = {
     "socket_timeout": 30,
 }
 
-# FFmpeg audio options
+# ── FFmpeg ──────────────────────────────────────────────────────────────────
 FFMPEG_OPTIONS: dict = {
-    "before_options": (
-        "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
-    ),
+    "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
     "options": "-vn -filter:a volume=0.5",
 }

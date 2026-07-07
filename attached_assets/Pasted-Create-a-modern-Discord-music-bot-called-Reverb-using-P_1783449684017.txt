@@ -1,0 +1,209 @@
+Create a modern Discord music bot called "Reverb" using Python with a premium UI experience.
+
+The bot uses a traditional prefix system:
+Prefix: .
+
+The bot should feel like a professional music platform with a clean, modern Discord design.
+
+🎨 REVERB BRANDING:
+- Bot name: Reverb
+- Dark modern music theme
+- Black, purple, and neon blue aesthetic
+- Every embed should have Reverb branding
+- Use clean emojis and professional formatting
+- Add timestamps and footers
+- Make the bot feel premium
+
+🎵 MODERN MUSIC PLAYER UI:
+
+When a song is playing, create a beautiful music player embed:
+
+Display:
+🎵 Song Name
+👤 Artist
+⏱ Duration
+🔊 Volume Level
+📀 Thumbnail
+🎧 Voice Channel
+📜 Queue Amount
+🙋 Requested By
+
+Example:
+
+🎧 Reverb Music Player
+━━━━━━━━━━━━━━
+🎵 Playing:
+Song Name
+
+👤 Artist:
+Artist Name
+
+⏱ Duration:
+3:45
+
+🔊 Volume:
+75%
+
+🙋 Requested By:
+User
+
+━━━━━━━━━━━━━━
+Reverb • Premium Music Experience
+
+Add interactive Discord buttons:
+
+▶️ Resume / Play
+⏸ Pause
+⏭ Skip
+⏹ Stop
+🔁 Loop
+🔀 Shuffle
+📜 Queue
+🔊 Volume
+
+Button features:
+- Use discord.py Views
+- Update the existing player message
+- Prevent spam messages
+- Only allow users in the same voice channel
+- Disable buttons when unavailable
+- Add cooldown protection
+
+🎵 PREFIX COMMAND SYSTEM:
+
+Music Commands:
+
+.play <song/url>
+- Search and play music
+- Add songs to queue
+
+.pause
+- Pause current song
+
+.resume
+- Resume music
+
+.skip
+- Skip current song
+
+.stop
+- Stop music and clear queue
+
+.queue
+- Show current queue
+
+.nowplaying
+- Show current song player
+
+.volume <number>
+- Change volume
+
+.loop
+- Toggle loop mode
+
+.shuffle
+- Shuffle queue
+
+.leave
+- Disconnect from voice
+
+.lyrics <song>
+- Show lyrics
+
+.search <song>
+- Search songs
+
+
+⚙️ BOT COMMANDS:
+
+.help
+- Modern interactive help menu
+
+.ping
+- Show bot latency
+
+.stats
+- Show bot statistics
+
+.uptime
+- Show uptime
+
+.invite
+- Show invite link
+
+.support
+- Show support server
+
+
+📜 HELP MENU UI:
+
+Create a modern `.help` command.
+
+Use:
+- Discord buttons
+- Dropdown menus
+- Pagination
+
+Categories:
+
+🎵 Music
+⚙️ Configuration
+🛠 Utility
+👑 Admin
+
+Example:
+
+🎧 Reverb Help Menu
+
+Select a category below:
+
+[🎵 Music] [⚙️ Settings] [🛠 Utility]
+
+━━━━━━━━━━━━━━
+Reverb Music Bot
+━━━━━━━━━━━━━━
+
+
+✨ EXTRA FEATURES:
+
+- Music queue system
+- Auto disconnect
+- DJ role support
+- Custom prefix support
+- Permission checks
+- Error handler
+- Logging system
+- User playlists
+- Favorites
+- Recently played songs
+- Auto resume
+- Song recommendations
+
+📂 CODE STRUCTURE:
+
+Reverb/
+│
+├── main.py
+├── config.py
+├── requirements.txt
+│
+├── cogs/
+│   ├── music.py
+│   ├── utility.py
+│   └── settings.py
+│
+├── utils/
+│   ├── embeds.py
+│   ├── player.py
+│   └── buttons.py
+
+Use:
+- Python
+- discord.py 2.x
+- discord.ui Views
+- Buttons
+- Select menus
+- yt-dlp
+- FFmpeg
+
+Make Reverb feel like a premium Discord music bot with a modern UI while keeping the classic prefix command system.
