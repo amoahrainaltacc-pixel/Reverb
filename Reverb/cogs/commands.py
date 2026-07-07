@@ -129,7 +129,45 @@ class General(commands.Cog, name="General"):
             embed.set_thumbnail(url=self.bot.user.avatar.url)
         await ctx.send(embed=embed)
 
-    # ─── Global error handler ───────────────────────────────────────────────
+    # ─── Global slash command error handler ────────────────────────────────
+
+    async def on_app_command_error(
+        self,
+        interaction: discord.Interaction,
+        error: app_commands.AppCommandError,
+    ) -> None:
+        """Handles errors raised inside any app (slash) command."""
+        if isinstance(error, app_commands.CommandOnCooldown):
+            await interaction.response.send_message(
+                embed=embeds.warning(
+                    f"Slow down! Try again in `{error.retry_after:.1f}s`.", title="⏱  Cooldown"
+                ),
+                ephemeral=True,
+            )
+        elif isinstance(error, app_commands.MissingPermissions):
+            missing = ", ".join(error.missing_permissions)
+            await interaction.response.send_message(
+                embed=embeds.error(f"You need the following permissions: `{missing}`"),
+                ephemeral=True,
+            )
+        elif isinstance(error, app_commands.BotMissingPermissions):
+            missing = ", ".join(error.missing_permissions)
+            await interaction.response.send_message(
+                embed=embeds.error(f"I need the following permissions: `{missing}`"),
+                ephemeral=True,
+            )
+        else:
+            log.error("Unhandled slash command error in %s: %s", interaction.command, error, exc_info=error)
+            msg = embeds.error("An unexpected error occurred. Please try again.", title="💥  Error")
+            try:
+                if interaction.response.is_done():
+                    await interaction.followup.send(embed=msg, ephemeral=True)
+                else:
+                    await interaction.response.send_message(embed=msg, ephemeral=True)
+            except Exception:
+                pass
+
+    # ─── Global prefix command error handler ───────────────────────────────
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):

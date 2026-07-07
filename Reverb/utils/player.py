@@ -98,17 +98,26 @@ class YTDLSource(discord.PCMVolumeTransformer):
             )
 
         if "entries" in data:
-            return [
-                {
+            playlist_title = data.get("title", "")
+            base_url = data.get("webpage_url", "")
+            extractor = data.get("extractor_key", "")
+            results = []
+            for e in data["entries"]:
+                if not e:
+                    continue
+                # Prefer a stable watch URL over the flat entry's bare ID-only url
+                url = e.get("webpage_url") or e.get("url", "")
+                # For YouTube flat entries, url may be just a video ID; build the full URL
+                if url and not url.startswith("http") and "youtu" in (base_url + extractor).lower():
+                    url = f"https://www.youtube.com/watch?v={url}"
+                results.append({
                     "title": e.get("title", "Unknown"),
-                    "url": e.get("url") or e.get("webpage_url", ""),
+                    "url": url,
                     "thumbnail": e.get("thumbnail"),
                     "duration": float(e.get("duration") or 0),
                     "uploader": e.get("uploader") or e.get("channel", "Unknown"),
-                }
-                for e in data["entries"]
-                if e
-            ]
+                })
+            return results
 
         return [
             {
@@ -126,9 +135,10 @@ class YTDLSource(discord.PCMVolumeTransformer):
 class GuildPlayer:
     """Per-guild music player: owns the queue, loop flag, volume, etc."""
 
-    def __init__(self, guild: discord.Guild, bot: discord.Client):
+    def __init__(self, guild: discord.Guild, bot: discord.Client, manager: "PlayerManager"):
         self.guild = guild
         self.bot = bot
+        self._manager = manager  # back-reference for self-removal on idle/auto-disconnect
 
         self._queue: asyncio.Queue[dict] = asyncio.Queue(maxsize=config.MAX_QUEUE_SIZE)
         self._pending: list[dict] = []   # snapshot list for display / shuffle
@@ -250,8 +260,10 @@ class GuildPlayer:
         self._player_task = self.bot.loop.create_task(self._player_loop())
 
     def stop(self) -> None:
+        self._cancel_auto_disconnect()
         if self._player_task:
             self._player_task.cancel()
+            self._player_task = None
         self.clear()
         self.current = None
         self.current_meta = None
@@ -314,6 +326,8 @@ class GuildPlayer:
                 embed=warn_embed("Left the voice channel due to inactivity.", title="💤  Idle"),
                 delete_after=15,
             )
+        # Remove from manager so the stale player is not reused
+        self._manager._players.pop(self.guild.id, None)
 
     def schedule_auto_disconnect(self, delay: int = config.AUTO_DISCONNECT_DELAY) -> None:
         self._cancel_auto_disconnect()
@@ -329,7 +343,9 @@ class GuildPlayer:
         if vc and vc.is_connected():
             members = [m for m in vc.channel.members if not m.bot]
             if not members:
+                self.stop()
                 await vc.disconnect()
+                self._manager._players.pop(self.guild.id, None)
                 if self.text_channel:
                     from utils.embeds import warning as warn_embed
                     await self.text_channel.send(
@@ -352,7 +368,7 @@ class PlayerManager:
 
     def get(self, guild: discord.Guild) -> GuildPlayer:
         if guild.id not in self._players:
-            self._players[guild.id] = GuildPlayer(guild, self.bot)
+            self._players[guild.id] = GuildPlayer(guild, self.bot, self)
         return self._players[guild.id]
 
     def remove(self, guild: discord.Guild) -> None:

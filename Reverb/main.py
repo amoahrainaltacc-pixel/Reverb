@@ -81,8 +81,12 @@ class Reverb(commands.Bot):
         from cogs.commands import General
 
         await self.add_cog(Music(self, self.player_manager))
-        await self.add_cog(General(self))
+        general_cog = General(self)
+        await self.add_cog(general_cog)
         log.info("Cogs loaded successfully.")
+
+        # Wire up the slash-command (app_commands) error handler from the General cog
+        self.tree.on_error = general_cog.on_app_command_error
 
         # Sync slash commands globally (may take ~1 hr for Discord to propagate)
         try:
