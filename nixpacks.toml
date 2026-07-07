@@ -1,0 +1,9 @@
+# nixpacks.toml – tells Railway which system packages to install
+[phases.setup]
+nixPkgs = ["ffmpeg", "python311"]
+
+[phases.install]
+cmds = ["pip install -r Reverb/requirements.txt"]
+
+[start]
+cmd = "cd Reverb && python main.py"
