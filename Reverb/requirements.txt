@@ -1,18 +1,14 @@
 # Reverb Discord Music Bot – Python dependencies
 # Install with: pip install -r requirements.txt
 
-# ── Discord ────────────────────────────────────────────────────────────────
-discord.py[voice]==2.3.2    # voice support pulls in PyNaCl automatically
+# Discord
+discord.py[voice]==2.3.2
 
-# ── Audio extraction ───────────────────────────────────────────────────────
-yt-dlp>=2024.1.1            # keep up-to-date; YouTube breaks old versions fast
+# Audio extraction
+yt-dlp>=2024.1.1
 
-# ── Web / async ────────────────────────────────────────────────────────────
-aiohttp>=3.9.0              # lyrics API calls
+# Web / async
+aiohttp>=3.9.0
 
-# ── Config ─────────────────────────────────────────────────────────────────
-python-dotenv>=1.0.0        # loads .env file (Railway uses env vars natively)
-
-# ── Python 3.13 shim (audioop was removed in 3.13) ────────────────────────
-# Safe to include on 3.11 / 3.12 — it's a no-op there.
-audioop-lts>=0.2.1
+# Environment variables
+python-dotenv>=1.0.0
